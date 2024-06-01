@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kril To Uzbek</title>
+  <style>
+    *{
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    body {
+      background-color: rgb(133, 146, 146);
+    }
+    .screen {
+      position: fixed;
+      width: calc(1vw*82);
+      height: calc(1vh*86);
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      background-color: aqua;
+      margin: 0 0 10px 0;
+      border: double 6px green;
+      border-radius: calc(1vw*8);
+      box-shadow: 0 0 calc(1vw*12) rgb(177, 114, 114),
+        0 0 calc(1vw*8) rgb(120, 79, 79);
+    }
+    .textarea_css {
+      width: calc(1vw*62);
+      height: calc(1vh*30);
+      border-radius: calc(1vw*2);
+      padding: calc(1vw*2);
+      resize: none;
+    } 
+    #textarea_lotin {
+      /*pointer-events: none;*/
+    }
+    .btn_css {
+      width: calc(1vw*24);
+      aspect-ratio: 2/1;
+      border-radius: calc(1vw*4);
+      border: double 4px black;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <p><u>Kril To Uzbek</u></p>
+    <textarea class="textarea_css" id="textarea_kril" placeholder="Krilcha matnni kiriting"></textarea>
+    <div class="btn_list">
+      <button class="btn_css" onclick="ClearText();">
+        Clear
+      </button>
+      <button class="btn_css" onclick="Aylantirish();">
+        Translate
+      </button>
+      <button class="btn_css" onclick="CopyText();">
+        Copy
+      </button>  
+    </div>
+    <textarea class="textarea_css" id="textarea_lotin" placeholder="Lotinchcha matn chiqadi"></textarea>  
+  </div>
+  <script>
+    //
+    //
+    //
+    const txa_1 = document.getElementById("textarea_kril");
+    const txa_2 = document.getElementById("textarea_lotin");
+    let DISPLAY_MODE = "light";
+    let symbols_ = "";
+    //
+    const krilToLatin = [
+      {kril: "А", lotin: "A"},
+      {kril: "Б", lotin: "B"},
+      {kril: "В", lotin: "V"},
+      {kril: "Г", lotin: "G"},
+      {kril: "Д", lotin: "D"},
+      {kril: "Е", lotin: "E"},
+      {kril: "Ё", lotin: "Yo"},
+      {kril: "Ж", lotin: "J"},
+      {kril: "З", lotin: "Z"},
+      {kril: "И", lotin: "I"},
+      {kril: "Й", lotin: "Y"},
+      {kril: "К", lotin: "K"},
+      {kril: "Л", lotin: "L"},
+      {kril: "М", lotin: "M"},
+      {kril: "Н", lotin: "N"},
+      {kril: "О", lotin: "O"},
+      {kril: "П", lotin: "P"},
+      {kril: "Р", lotin: "R"},
+      {kril: "С", lotin: "S"},
+      {kril: "Т", lotin: "T"},
+      {kril: "У", lotin: "U"},
+      {kril: "Ф", lotin: "F"},
+      {kril: "Х", lotin: "X"},
+      {kril: "Ҳ", lotin: "H"},
+      {kril: "Ч", lotin: "Ch"},
+      {kril: "Ш", lotin: "Sh"},
+      {kril: "Ъ", lotin: "'"},
+      {kril: "Ғ", lotin: "Gʻ"},
+      {kril: "Қ", lotin: "Q"},
+      {kril: "Ў", lotin: "Oʻ"},
+      {kril: "ғ", lotin: "gʻ"},
+      {kril: "қ", lotin: "q"},
+      {kril: "ў", lotin: "oʻ"},
+      // Additional Uzbek letters
+      {kril: "Э", lotin: "E"},
+      {kril: "Ю", lotin: "Yu"},
+      {kril: "Я", lotin: "Ya"},
+      {kril: "Ы", lotin: ""},
+      {kril: "Ь", lotin: ""},
+      {kril: "Ц", lotin: "S"},
+      // Lowercase Cyrillic letters
+      {kril: "а", lotin: "a"},
+      {kril: "б", lotin: "b"},
+      {kril: "в", lotin: "v"},
+      {kril: "г", lotin: "g"},
+      {kril: "д", lotin: "d"},
+      {kril: "е", lotin: "e"},
+      {kril: "ё", lotin: "yo"},
+      {kril: "ж", lotin: "j"},
+      {kril: "з", lotin: "z"},
+      {kril: "и", lotin: "i"},
+      {kril: "й", lotin: "y"},
+      {kril: "к", lotin: "k"},
+      {kril: "л", lotin: "l"},
+      {kril: "м", lotin: "m"},
+      {kril: "н", lotin: "n"},
+      {kril: "о", lotin: "o"},
+      {kril: "п", lotin: "p"},
+      {kril: "р", lotin: "r"},
+      {kril: "с", lotin: "s"},
+      {kril: "т", lotin: "t"},
+      {kril: "у", lotin: "u"},
+      {kril: "ф", lotin: "f"},
+      {kril: "х", lotin: "x"},
+      {kril: "ҳ", lotin: "h"},
+      {kril: "ч", lotin: "ch"},
+      {kril: "ш", lotin: "sh"},
+      {kril: "ъ", lotin: "'"},
+      {kril: "ғ", lotin: "gʻ"},
+      {kril: "қ", lotin: "q"},
+      {kril: "ў", lotin: "oʻ"},
+      // Additional Uzbek letters
+      {kril: "э", lotin: "e"},
+      {kril: "ю", lotin: "yu"},
+      {kril: "я", lotin: "ya"},
+      {kril: "ы", lotin: ""},
+      {kril: "ь", lotin: ""},
+      {kril: "ц", lotin: "s"}
+    ];
+    //
+    if (window.matchMedia) {
+      DISPLAY_MODE = "dark";
+    } else {
+      DISPLAY_MODE = "light";
+    }
+    //
+    //
+    //
+    function ClearText() {
+      txa_1.value = "";
+    }
+    //
+    //
+    //
+    function CopyText() {
+      txa_2.value;
+      copyToClipboard(txa_2.value);
+    }
+    //
+    //
+    //
+    function Aylantirish() {
+      if (txa_1.length !== 0) {
+        txa_2.value = KrilToLotin(txa_1.value);
+      } 
+    }
+    //
+    //
+    //
+    function copyToClipboard(text) {
+      // Create a textarea element
+      var textarea = document.createElement("textarea");
+      // Set the value of the textarea to the text to be copied
+      textarea.value = text;
+      // Make sure it's not displayed anywhere on the screen
+      textarea.style.position = "fixed";
+      textarea.style.opacity = 0;
+      // Append the textarea to the DOM
+      document.body.appendChild(textarea);
+      // Select the text within the textarea
+      textarea.select();
+      // Copy the selected text to the clipboard
+      document.execCommand("copy");
+      // Remove the textarea from the DOM
+      document.body.removeChild(textarea);
+    }
+    //
+    //
+    //
+    function KrilToLotin(str_) {
+      symbols_ = "";
+      for (let i = 0; i < str_.length; i++) {
+        symb_ = str_.substr(i, 1);
+        krilToLatin.forEach(element => {
+          if (element.kril === symb_) {
+            symb_ = element.lotin;
+          }
+        });
+        symbols_+=symb_;
+      }
+      return symbols_;
+    }
+  </script>
+</body>
+</html>
